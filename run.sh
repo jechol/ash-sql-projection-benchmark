@@ -5,6 +5,10 @@ cd "$(dirname "$0")"
 for variant in before after; do
   export PROJECTION_VARIANT="$variant"
   mix deps.get
+  if [[ "$variant" == before ]]; then
+    mix ash.setup
+    mix run priv/repo/seeds.exs
+  fi
   mix run -e 'ProjectionBenchmark.run()'
 done
 

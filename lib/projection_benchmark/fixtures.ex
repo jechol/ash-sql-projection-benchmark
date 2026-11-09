@@ -1,17 +1,8 @@
-defmodule ProjectionBenchmark.Domain do
-  use Ash.Domain, validate_config_inclusion?: false
-
-  resources do
-    allow_unregistered?(true)
-  end
-end
-
 defmodule ProjectionBenchmark.Product do
   use Ash.Resource, domain: ProjectionBenchmark.Domain, data_layer: AshPostgres.DataLayer
 
   postgres do
     repo(ProjectionBenchmark.Repo)
-    schema("pg_temp")
     table("products")
   end
 
@@ -37,7 +28,6 @@ defmodule ProjectionBenchmark.Payment do
 
   postgres do
     repo(ProjectionBenchmark.Repo)
-    schema("pg_temp")
     table("payments")
   end
 
@@ -74,7 +64,6 @@ defmodule ProjectionBenchmark.Invoice do
 
   postgres do
     repo(ProjectionBenchmark.Repo)
-    schema("pg_temp")
     table("invoices")
   end
 

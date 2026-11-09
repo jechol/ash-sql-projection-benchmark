@@ -15,7 +15,12 @@ Requires Elixir 1.18+ and PostgreSQL on localhost:5432.
 ```
 
 The default connection is `postgres://postgres:postgres@localhost:5432/postgres`.
-Use `DATABASE_URL` to change it. All fixture tables are temporary.
+Use `DATABASE_URL` to change it. The script creates `products`, `invoices` and
+`payments` tables and leaves the fixture data in the database.
+
+Migration and seed data run once, then both variants read the same tables.
+The migration was generated from the Resources with `mix ash.codegen`;
+`priv/repo/seeds.exs` inserts data with `Ash.Seed.upsert!`.
 
 The script runs the same query with two pinned ash_sql commits, using separate
 lockfiles, dependencies, builds and VMs. Ash and AshPostgres stay the same.
@@ -25,8 +30,8 @@ query; it does not need the companion AshPostgres patch.
 ## Result
 
 ```text
-before: 1544 SQL bytes, 500 rows
-after: 918 SQL bytes, 500 rows
+before: 1532 SQL bytes, 500 rows
+after: 906 SQL bytes, 500 rows
 ```
 
 The script checks that rows and bind parameters match. Generated SQL is saved to
