@@ -1,6 +1,7 @@
 # Ash SQL projection example
 
-Reproduction for [jechol/ash_sql#3](https://github.com/jechol/ash_sql/pull/3).
+Example for [ash-project/ash_sql#281](https://github.com/ash-project/ash_sql/pull/281).
+Query-execution integration: [ash-project/ash_postgres#919](https://github.com/ash-project/ash_postgres/pull/919).
 
 Read an Invoice's number, Product name, and latest Payment's `status` and
 `paid_at`. The Payment resource has 20 fields, but only those two are needed
