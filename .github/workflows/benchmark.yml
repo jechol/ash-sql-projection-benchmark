@@ -9,11 +9,21 @@ permissions:
 jobs:
   benchmark:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: [5432:5432]
+        options: --health-cmd pg_isready --health-interval 5s --health-retries 10
     steps:
       - uses: actions/checkout@v7.0.1
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: '1.18.4'
+          otp-version: '27.3'
       - run: ./run.sh
       - uses: actions/upload-artifact@v7.0.2
-        if: always()
         with:
-          name: sql-and-measurements
-          path: results/
+          name: sql
+          path: results/*.sql

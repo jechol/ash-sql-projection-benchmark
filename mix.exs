@@ -18,11 +18,10 @@ defmodule ProjectionBenchmark.MixProject do
         {:ash_postgres, git: pins.ash_postgres.url, ref: pins.ash_postgres.ref},
         {:ash_sql, git: pins[variant].url, ref: pins[variant].ref, override: true},
         {:ecto_sql, "~> 3.14.0"},
-        {:postgrex, "~> 0.22.0"},
-        {:jason, "~> 1.4"}
+        {:postgrex, "~> 0.22.0"}
       ]
     ]
   end
 
-  def application, do: [extra_applications: [:logger, :crypto]]
+  def application, do: [extra_applications: [:logger]]
 end
