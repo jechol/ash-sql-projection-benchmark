@@ -1,7 +1,7 @@
 %{
   "ash": {:git, "https://github.com/ash-project/ash.git", "a901146fbbd57afabe09a42a8ab9e0463d2eade8", [ref: "a901146fbbd57afabe09a42a8ab9e0463d2eade8"]},
   "ash_postgres": {:git, "https://github.com/ash-project/ash_postgres.git", "c21b875d97aa0fa2d3409ac6d2e36013324ccfb4", [ref: "c21b875d97aa0fa2d3409ac6d2e36013324ccfb4"]},
-  "ash_sql": {:git, "https://github.com/jechol/ash_sql.git", "7c76ce808e1d11dcb399927174f289a8c590bfc4", [ref: "7c76ce808e1d11dcb399927174f289a8c590bfc4"]},
+  "ash_sql": {:git, "https://github.com/jechol/ash_sql.git", "7f7baef472262a4206edd0e3b5d595cb1467fec3", [ref: "7f7baef472262a4206edd0e3b5d595cb1467fec3"]},
   "crux": {:hex, :crux, "0.1.5", "fe95455065e20f3c70a492beb16d3f477c20d659725d93525f932cac4304ad93", [:mix], [{:picosat_elixir, "~> 0.2", [hex: :picosat_elixir, repo: "hexpm", optional: true]}, {:simple_sat, ">= 0.1.1 and < 1.0.0-0", [hex: :simple_sat, repo: "hexpm", optional: true]}, {:stream_data, "~> 1.0", [hex: :stream_data, repo: "hexpm", optional: true]}], "hexpm", "56f4941d362a262a83e5f2ba4fae2173ac2f556a03b5b3965f58b6eb0aedbba3"},
   "db_connection": {:hex, :db_connection, "2.10.2", "ae391e803a5adff104da913c2fc1c0c14a37f8b10001dcef568796e1fb7bf95c", [:mix], [{:telemetry, "~> 0.4 or ~> 1.0", [hex: :telemetry, repo: "hexpm", optional: false]}], "hexpm", "510b14482330f1af6490a2fa0efd8d4f1435d1529b165647df22ac0f2df0fa93"},
   "decimal": {:hex, :decimal, "3.2.0", "f1235f05d841a211fda78a08fdb9777f2ff51a71f18455233fae186ff76187c6", [:mix], [], "hexpm", "190bca80580ce61aa69bb0eacadd7677710205c770225c2c2c07e32a5c31b234"},

@@ -5,7 +5,8 @@ Query-execution integration: [ash-project/ash_postgres#919](https://github.com/a
 
 Read an Invoice's number, Product name, and latest Payment's `status` and
 `paid_at`. The Payment resource has 20 fields, but only those two are needed
-outside the `from_many?` subquery. The patch reduces its selection accordingly.
+outside the `from_many?` subquery. The patch narrows the selection, conservatively retaining extra columns when
+named bindings overlap.
 
 ## Run
 
@@ -32,7 +33,7 @@ query; it does not need the companion AshPostgres patch.
 
 ```text
 before: 1532 SQL bytes, 500 rows
-after: 906 SQL bytes, 500 rows
+after: 960 SQL bytes, 500 rows
 ```
 
 The script checks that rows and bind parameters match. Generated SQL is saved to
@@ -124,8 +125,10 @@ FROM (
     ON si0."product_id" = sp1."id"
   LEFT OUTER JOIN LATERAL (
     SELECT
+      ssp0."id" AS "id",
       ssp0."status" AS "status",
-      ssp0."paid_at" AS "paid_at"
+      ssp0."paid_at" AS "paid_at",
+      ssp0."created_at" AS "created_at"
     FROM "public"."payments" AS ssp0
     WHERE (si0."id" = ssp0."invoice_id")
     ORDER BY ssp0."created_at" DESC, ssp0."id" DESC

@@ -13,6 +13,6 @@
   },
   "after" => %{
     url: "https://github.com/jechol/ash_sql.git",
-    ref: "7c76ce808e1d11dcb399927174f289a8c590bfc4"
+    ref: "7f7baef472262a4206edd0e3b5d595cb1467fec3"
   }
 }
