@@ -1,0 +1,24 @@
+Elixir 1.19.5 / OTP 28
+ash: 3.37.3
+ash_sql: 0.8.8
+ash_postgres: 2.15.2
+ecto: 3.14.3
+PostgreSQL: 17.10 (Ubuntu 17.10-1.pgdg24.04+1)
+
+no join: 500 rows, 66 -> 66 SQL bytes
+SQL generation                     2.59 us
+prune                              0.28 us
+prune + SQL generation             2.93 us
+build + SQL generation             55.38 us
+build + prune + SQL generation     56.42 us
+build + execute                    667.7 us
+build + prune + execute            639.2 us
+
+latest payment: 500 rows, 1532 -> 960 SQL bytes
+SQL generation                     19.65 us
+prune                              16.08 us
+prune + SQL generation             32.14 us
+build + SQL generation             519.51 us
+build + prune + SQL generation     545.4 us
+build + execute                    29351.9 us
+build + prune + execute            29150.4 us

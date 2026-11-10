@@ -25,7 +25,7 @@ The migration was generated from the Resources with `mix ash.codegen`;
 `priv/repo/seeds.exs` inserts data with `Ash.Seed.upsert!`.
 
 The script runs the same query with two pinned ash_sql commits, using separate
-lockfiles, dependencies, builds and VMs. Ash and AshPostgres stay the same.
+lockfiles, dependencies and builds. Ash and AshPostgres stay the same.
 The after version calls `AshSql.Query.Projection.prune/1` before executing the
 query; it does not need the companion AshPostgres patch.
 
@@ -42,6 +42,41 @@ Fixtures include missing payments and failed payments with `paid_at = NULL`.
 
 PostgreSQL already prunes unused values. This example shows shorter SQL for
 debugging, not a runtime speedup.
+
+## Pruning overhead
+
+After `./run.sh`, run:
+
+```sh
+PROJECTION_VARIANT=after mix run bench.exs
+```
+
+This compares the same query with and without the final pruning pass.
+It includes a query without joins to measure the candidate check, and the latest
+Payment query above. Rows and bind parameters must match before timing starts.
+
+`SQL generation` calls `Repo.to_sql/2` to produce the SQL string and bind
+parameters without executing a database query. It and `prune` use an already-built
+Ecto query. `build` includes `Ash.data_layer_query!/1`; `execute` includes
+PostgreSQL execution and result mapping instead of a separate `to_sql` call.
+The script invokes pruning directly, as `run.sh` does; it does not benchmark the
+companion AshPostgres integration or the complete `Ash.read!` lifecycle.
+
+Times are microseconds per call: the median of 15 batch averages, after a short
+warmup. Phase order rotates between rounds. Compilation and fixture setup are
+excluded. The phases are measured independently, so their times are not additive.
+
+An [example run](examples/bench.txt) on an AMD Ryzen 5 7430U,
+Elixir 1.19.5 / OTP 28, PostgreSQL 17.10:
+
+| Query | Build + SQL generation | Build + prune + SQL generation |
+|---|---:|---:|
+| No join | 55.38 µs | 56.42 µs |
+| Latest Payment | 519.51 µs | 545.40 µs |
+
+Across two runs, the latest Payment query added about 15–26 µs during query
+construction and SQL generation. Its database-inclusive path took about 29–30 ms
+in either case. These measurements show the cost of pruning, not a runtime speedup.
 
 ## Generated SQL
 

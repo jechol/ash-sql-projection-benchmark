@@ -1,4 +1,4 @@
 [
   import_deps: [:ash, :ash_postgres],
-  inputs: ["mix.exs", "pins.exs", "config/*.exs", "lib/**/*.ex", "priv/**/*.exs"]
+  inputs: ["mix.exs", "pins.exs", "bench.exs", "config/*.exs", "lib/**/*.ex", "priv/**/*.exs"]
 ]
