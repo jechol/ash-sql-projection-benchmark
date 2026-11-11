@@ -1,24 +1,88 @@
-Elixir 1.19.5 / OTP 28
-ash: 3.37.3
-ash_sql: 0.8.8
-ash_postgres: 2.15.2
-ecto: 3.14.3
-PostgreSQL: 17.10 (Ubuntu 17.10-1.pgdg24.04+1)
+AMD Ryzen 5 7430U
+Elixir 1.19.5 / OTP 28.3.1
+PostgreSQL 17.10
+Ash a901146fbbd57afabe09a42a8ab9e0463d2eade8
+AshPostgres c21b875d97aa0fa2d3409ac6d2e36013324ccfb4
+AshSql upstream: 1961731174355284814e97c4d0627779f945b173
+AshSql ast_scan: 7f7baef472262a4206edd0e3b5d595cb1467fec3
+AshSql tracked: c434539e3209536af43d71b174ab25cc9c143233
 
-no join: 500 rows, 66 -> 66 SQL bytes
-SQL generation                     2.59 us
-prune                              0.28 us
-prune + SQL generation             2.93 us
-build + SQL generation             55.38 us
-build + prune + SQL generation     56.42 us
-build + execute                    667.7 us
-build + prune + execute            639.2 us
+15 batch averages per phase; medians below.
+prune: 1000 calls/batch; build + SQL: 150; build + execute: 10.
+Reductions count the calling process only. upstream's prune is a no-op.
+Rows and bind parameters match in all three variants.
+Wall times varied substantially between runs; these are not evidence of a speedup.
 
-latest payment: 500 rows, 1532 -> 960 SQL bytes
-SQL generation                     19.65 us
-prune                              16.08 us
-prune + SQL generation             32.14 us
-build + SQL generation             519.51 us
-build + prune + SQL generation     545.4 us
-build + execute                    29351.9 us
-build + prune + execute            29150.4 us
+SQL bytes (excluding trailing newline):
+plain: upstream=66, ast_scan=66, tracked=66
+latest: upstream=1532, ast_scan=960, tracked=906
+filtered: upstream=1571, ast_scan=1026, tracked=972
+
+Run 1: upstream, ast_scan, tracked
+variant	query	phase	us/call	process reductions/call
+upstream	plain	prune	0.016	4.5
+upstream	plain	build + prune + SQL generation	59.287	4114.7
+upstream	plain	build + prune + execute	637.3	41754.5
+upstream	latest	prune	0.017	4.5
+upstream	latest	build + prune + SQL generation	610.473	35690.8
+upstream	latest	build + prune + execute	29315.5	313060.5
+upstream	filtered	prune	0.018	4.5
+upstream	filtered	build + prune + SQL generation	685.147	38696.5
+upstream	filtered	build + prune + execute	29693.6	293115.7
+
+variant	query	phase	us/call	process reductions/call
+ast_scan	plain	prune	0.344	100.7
+ast_scan	plain	build + prune + SQL generation	60.873	4217.7
+ast_scan	plain	build + prune + execute	631.9	41886.7
+ast_scan	latest	prune	18.99	3233.0
+ast_scan	latest	build + prune + SQL generation	652.433	38033.6
+ast_scan	latest	build + prune + execute	29411.9	315509.4
+ast_scan	filtered	prune	19.626	3412.4
+ast_scan	filtered	build + prune + SQL generation	772.573	41284.4
+ast_scan	filtered	build + prune + execute	30589.0	295972.5
+
+variant	query	phase	us/call	process reductions/call
+tracked	plain	prune	0.466	141.7
+tracked	plain	build + prune + SQL generation	58.893	4251.7
+tracked	plain	build + prune + execute	628.2	41991.7
+tracked	latest	prune	6.812	1421.7
+tracked	latest	build + prune + SQL generation	634.527	36259.1
+tracked	latest	build + prune + execute	29411.0	314055.8
+tracked	filtered	prune	6.84	1437.1
+tracked	filtered	build + prune + SQL generation	714.76	39444.7
+tracked	filtered	build + prune + execute	30597.1	295213.4
+
+
+Run 2: tracked, ast_scan, upstream
+variant	query	phase	us/call	process reductions/call
+tracked	plain	prune	0.553	141.7
+tracked	plain	build + prune + SQL generation	71.253	4253.3
+tracked	plain	build + prune + execute	895.4	42120.0
+tracked	latest	prune	8.974	1421.7
+tracked	latest	build + prune + SQL generation	766.713	36295.5
+tracked	latest	build + prune + execute	37183.4	313750.2
+tracked	filtered	prune	8.714	1437.1
+tracked	filtered	build + prune + SQL generation	924.447	39435.5
+tracked	filtered	build + prune + execute	37460.2	294755.3
+
+variant	query	phase	us/call	process reductions/call
+ast_scan	plain	prune	0.344	100.7
+ast_scan	plain	build + prune + SQL generation	64.753	4205.4
+ast_scan	plain	build + prune + execute	700.8	41994.8
+ast_scan	latest	prune	22.292	3232.8
+ast_scan	latest	build + prune + SQL generation	756.64	38059.1
+ast_scan	latest	build + prune + execute	34404.0	315286.0
+ast_scan	filtered	prune	24.89	3412.4
+ast_scan	filtered	build + prune + SQL generation	953.547	41308.6
+ast_scan	filtered	build + prune + execute	46433.1	296637.2
+
+variant	query	phase	us/call	process reductions/call
+upstream	plain	prune	0.023	4.5
+upstream	plain	build + prune + SQL generation	97.353	4118.9
+upstream	plain	build + prune + execute	1353.1	41642.6
+upstream	latest	prune	0.045	4.5
+upstream	latest	build + prune + SQL generation	2189.287	35710.1
+upstream	latest	build + prune + execute	80646.0	313802.1
+upstream	filtered	prune	0.046	4.5
+upstream	filtered	build + prune + SQL generation	2.8e3	38711.1
+upstream	filtered	build + prune + execute	80270.6	293580.0

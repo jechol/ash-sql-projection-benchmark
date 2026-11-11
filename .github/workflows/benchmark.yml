@@ -25,5 +25,7 @@ jobs:
       - run: ./run.sh
       - uses: actions/upload-artifact@v7.0.2
         with:
-          name: sql
-          path: results/*.sql
+          name: benchmark-results
+          path: |
+            results/*.sql
+            results/*-bench.tsv

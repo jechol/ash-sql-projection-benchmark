@@ -2,15 +2,22 @@
 set -euo pipefail
 cd "$(dirname "$0")"
 
-for variant in before after; do
+for variant in upstream ast_scan tracked; do
   export PROJECTION_VARIANT="$variant"
   mix deps.get
-  if [[ "$variant" == before ]]; then
+  if [[ "$variant" == upstream ]]; then
     mix ash.setup
     mix run priv/repo/seeds.exs
   fi
-  mix run -e 'ProjectionBenchmark.run()'
+  mix compile
 done
 
-cmp results/before.term results/after.term
-echo 'Results and bind parameters match. SQL is in results/before.sql and results/after.sql.'
+for variant in upstream ast_scan tracked; do
+  export PROJECTION_VARIANT="$variant"
+  mix run -e 'ProjectionBenchmark.run()'
+  mix run bench.exs
+done
+
+cmp results/upstream.term results/ast_scan.term
+cmp results/upstream.term results/tracked.term
+echo 'Results and bind parameters match across all three variants. See results/ for SQL and timings.'

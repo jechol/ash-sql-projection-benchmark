@@ -2,8 +2,11 @@ defmodule ProjectionBenchmark.MixProject do
   use Mix.Project
 
   def project do
-    variant = System.get_env("PROJECTION_VARIANT", "before")
-    unless variant in ["before", "after"], do: raise("PROJECTION_VARIANT must be before or after")
+    variant = System.get_env("PROJECTION_VARIANT", "upstream")
+
+    unless variant in ["upstream", "ast_scan", "tracked"],
+      do: raise("PROJECTION_VARIANT는 upstream, ast_scan, tracked 중 하나여야 합니다")
+
     pins = Code.eval_file("pins.exs") |> elem(0)
 
     [

@@ -5,4 +5,4 @@ config :projection_benchmark, ProjectionBenchmark.Repo,
   pool_size: 1,
   log: false
 
-config :projection_benchmark, :variant, System.get_env("PROJECTION_VARIANT", "before")
+config :projection_benchmark, :variant, System.get_env("PROJECTION_VARIANT", "upstream")

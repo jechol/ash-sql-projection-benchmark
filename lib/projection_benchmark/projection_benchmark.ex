@@ -8,21 +8,36 @@ defmodule ProjectionBenchmark do
     variant = Application.fetch_env!(:projection_benchmark, :variant)
     File.mkdir_p!("results")
 
-    query = query() |> Ash.data_layer_query!() |> Map.fetch!(:query)
+    results =
+      for {name, query} <- queries() do
+        ecto = build(query)
+        pruned = prune(ecto, variant)
+        {_, params} = Repo.to_sql(:all, ecto)
+        {sql, ^params} = Repo.to_sql(:all, pruned)
+        rows = execute(ecto)
+        ^rows = execute(pruned)
+        expected_count = if name == "filtered", do: 450, else: 500
+        ^expected_count = length(rows)
 
-    query =
-      if variant == "after",
-        do: apply(AshSql.Query.Projection, :prune, [query]),
-        else: query
+        File.write!("results/#{variant}-#{name}.sql", sql <> "\n")
+        IO.puts("#{variant} / #{name}: #{byte_size(sql)} SQL bytes, #{length(rows)} rows")
+        {name, params, Enum.map(rows, &Map.take(&1, [:id, :number, :calculations]))}
+      end
 
-    {sql, params} = Repo.to_sql(:all, query)
-    rows = Repo.all(query) |> AshSql.Query.remap_mapped_fields(query)
-    500 = length(rows)
-    values = Enum.map(rows, &{&1.id, &1.number, &1.calculations})
+    File.write!("results/#{variant}.term", :erlang.term_to_binary(results))
+  end
 
-    File.write!("results/#{variant}.sql", sql <> "\n")
-    File.write!("results/#{variant}.term", :erlang.term_to_binary({params, values}))
-    IO.puts("#{variant}: #{byte_size(sql)} SQL bytes, #{length(rows)} rows")
+  def build(query), do: Ash.data_layer_query!(query).query
+  def prune(query, "upstream"), do: query
+  def prune(query, _variant), do: apply(AshSql.Query.Projection, :prune, [query])
+  def execute(query), do: Repo.all(query) |> AshSql.Query.remap_mapped_fields(query)
+
+  def queries do
+    [
+      {"plain", Invoice |> Ash.Query.select([:id, :number]) |> Ash.Query.sort(id: :asc)},
+      {"latest", query()},
+      {"filtered", query() |> Ash.Query.filter(latest_payment.amount > 1)}
+    ]
   end
 
   def query do
